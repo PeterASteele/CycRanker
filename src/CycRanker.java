@@ -50,11 +50,16 @@ public class CycRanker {
 				edges.get(mapToInt.get(start)).add(new Edge(mapToInt.get(end), 1));
 				reverseEdges.get(mapToInt.get(end)).add(new Edge(mapToInt.get(start), 1));
 			}
-			
+			ArrayList<ArrayList<Integer>> start = new ArrayList<ArrayList<Integer>>();
+			for(int a = 3; a < arr.length-2; a++){ 
+				start.add(new ArrayList<Integer>());
+				start.get(start.size()-1).add(mapToInt.get(arr[a]));
+				start.get(start.size()-1).add(mapToInt.get(arr[a+1]));
+			}
 			//calculate new cycles from adding the xth node.
 			//newNodes are all the new start points.
 			
-			ArrayList<Cycle> cyclesOnNewNodes = getCyclesConstrainedByDepth(newNodes, edges, 5);
+			ArrayList<Cycle> cyclesOnNewNodes = getCyclesConstrainedByDepth(start, edges, 5);
 			for(Cycle temp: cyclesOnNewNodes){
 				int tempSize = cycles.size();
 				cycles.add(temp);
@@ -86,9 +91,9 @@ public class CycRanker {
 	}
 
 	private static ArrayList<Cycle> getCyclesConstrainedByDepth(
-			ArrayList<Integer> newNodes, ArrayList<HashSet<Edge>> edges, int i) {
+			ArrayList<ArrayList<Integer>> start, ArrayList<HashSet<Edge>> edges, int i) {
 		
-		ArrayList<ArrayList<Integer>> paths = getAllPathsConstrainedByLengthWrap(newNodes, edges, i);
+		ArrayList<ArrayList<Integer>> paths = getAllPathsConstrainedByLengthWrap(start, edges, i);
 		ArrayList<Cycle> output = new ArrayList<Cycle>();
 		for(ArrayList<Integer> temp: paths){
 			Cycle cyc = getCycleIfExists(temp);
@@ -125,20 +130,15 @@ public class CycRanker {
 	}
 
 	private static ArrayList<ArrayList<Integer>> getAllPathsConstrainedByLengthWrap(
-			ArrayList<Integer> newNodes, ArrayList<HashSet<Edge>> edges, int i) {
-		ArrayList<ArrayList<Integer>> start = new ArrayList<ArrayList<Integer>>();
-		for(Integer temp:newNodes){
-			start.add(new ArrayList<Integer>());
-			start.get(start.size()-1).add(temp);
-		}
-		return getAllPathsConstrainedByLength(start, edges, i);
+			ArrayList<ArrayList<Integer>> start2, ArrayList<HashSet<Edge>> edges, int i) {
+		return getAllPathsConstrainedByLength(start2, edges, i);
 	}
 
 	private static ArrayList<ArrayList<Integer>> getAllPathsConstrainedByLength(
 			ArrayList<ArrayList<Integer>> start,
 			ArrayList<HashSet<Edge>> edges, int i) {
 		
-		if(i == 1){
+		if(i == 2){
 			return start;
 		}
 		ArrayList<ArrayList<Integer>> nextRound = new ArrayList<ArrayList<Integer>>();
